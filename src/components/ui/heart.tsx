@@ -1,8 +1,8 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
-import { Points } from "three";
-
+import { Mesh, Points } from "three";
+import { Text } from "@react-three/drei";
 interface HeartParticlesProps {
   count?: number;
 }
@@ -11,6 +11,7 @@ export default function HeartParticles({
   count = 100000,
 }: HeartParticlesProps) {
   const pointsRef = useRef<Points>(null);
+  const textRef = useRef<Mesh>(null); // Ref for animating text
 
   const geometry = useMemo(() => {
     const positions: number[] = [];
@@ -38,11 +39,13 @@ export default function HeartParticles({
   }, [count]);
 
   const material = useMemo(() => {
+    const texture = new THREE.TextureLoader().load("/heart.png");
     return new THREE.PointsMaterial({
-      color: 0xff4d6d,
-      size: 0.012,
+      size: 0.05,
+      map: texture,
       transparent: true,
-      opacity: 0.9,
+      alphaTest: 0.5,
+      depthWrite: false,
     });
   }, []);
 
@@ -54,9 +57,26 @@ export default function HeartParticles({
       pointsRef.current.rotation.set(0, t * 0.5, 0); // Y-axis rotation
       pointsRef.current.scale.set(pulse, pulse, pulse); // pulsing
     }
+    if (textRef.current) {
+      textRef.current.position.y = 5 + Math.sin(t * 2) * 0.5;
+    }
   });
 
-  return <points ref={pointsRef} geometry={geometry} material={material} />;
+  return (
+    <>
+      <points ref={pointsRef} geometry={geometry} material={material} />
+      <Text
+        position={[0, 5, -10]}
+        fontSize={2}
+        color="yellow"
+        anchorX="center"
+        anchorY="middle"
+        ref={textRef}
+      >
+        Dbt19
+      </Text>
+    </>
+  );
 }
 
 function isInsideHeart(x: number, y: number, z: number): boolean {
