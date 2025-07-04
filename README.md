@@ -1,69 +1,100 @@
-# React + TypeScript + Vite
+# 3D Heart Particles
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A mesmerizing 3D heart particle animation built with React, TypeScript, Three.js, and Vite. This project creates an interactive scene with heart-shaped particles, background music, and customizable floating text.
 
-Currently, two official plugins are available:
+## 🖼️ Screenshots
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![Heart Scene](public/screenshots/pic1.png)
+![Heart Scene 2](public/screenshots/pic2.png)
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧠 Tech Stack
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- [React](https://react.dev)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev)
+- [Three.js](https://threejs.org/)
+- [@react-three/fiber](https://docs.pmnd.rs/react-three-fiber/)
+- [@react-three/drei](https://github.com/pmndrs/drei)
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 📁 Project Structure
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+3d-heart-particles/
+├── public/
+│   ├── heart.png           # Texture for particles
+│   └── my-love/
+│       └── music/
+│           └── piano.mp3   # Background music
+├── src/
+│   ├── components/
+│   │   └── ui/
+│   │       └── heart.tsx   # HeartParticles component
+│   ├── pages/
+│   │   └── HeartPage.tsx   # Main canvas page
+│   ├── App.tsx
+│   └── main.tsx
+├── index.html
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── README.md
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 1. Clone the repository
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/dubanteo19/3d-heart
+cd 3d-heart
 ```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Start development server
+
+```bash
+npm run dev
+```
+
+Open your browser and go to:  
+👉 [http://localhost:5173](http://localhost:5173)
+
+## 🎮 Controls
+
+| Action           | Key           |
+|------------------|---------------|
+| Move Forward     | W             |
+| Move Backward    | S             |
+| Strafe Left      | A             |
+| Strafe Right     | D             |
+| Move Up          | Space         |
+| Move Down        | Shift         |
+| Look Around      | Mouse         |
+| Start Music      | Click anywhere |
+
+
+## 🧩 Customization
+
+### 🎵 Change background music
+Replace the following file with your own:  
+`public/my-love/music/piano.mp3`
+
+### ❤️ Change heart shape texture
+Replace the following with your own transparent PNG (recommend using 64x64 or 128x128):  
+`public/heart.png`
+
+### 📝 Change text
+Edit the text inside `src/components/ui/heart.tsx`:
+
+```tsx
+<Text position={[0, 5, -10]} fontSize={2} color="yellow">
+  Dbt19
+</Text>
+```
+
