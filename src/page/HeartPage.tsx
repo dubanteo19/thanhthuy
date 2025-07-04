@@ -67,12 +67,13 @@ export const HeartPage = () => {
       audioRef.current.play();
     }
   };
-
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const z = isMobile ? 10 : 1;
   return (
     <div className="bg-white h-screen w-screen p-5 overflow-hidden">
       <Canvas
         onClick={handleClick}
-        camera={{ position: [0, 0, 1], fov: 50 }}
+        camera={{ position: [0, 0, z], fov: 50 }}
         className="cursor-pointer"
       >
         <ambientLight intensity={0.6} />
@@ -80,7 +81,7 @@ export const HeartPage = () => {
         <HeartParticles />
         <Controls />
       </Canvas>
-      <audio ref={audioRef} src="/my-love/music/piano.mp3" />
+      <audio ref={audioRef} src="/music/piano.mp3" />
     </div>
   );
 };
