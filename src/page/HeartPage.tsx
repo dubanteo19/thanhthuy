@@ -1,87 +1,97 @@
-import HeartParticles from "@/components/ui/heart";
-import { PointerLockControls } from "@react-three/drei";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
-import * as THREE from "three";
-const Controls = () => {
-  const { camera } = useThree();
-
-  const keys = useRef<Record<string, boolean>>({
-    KeyW: false,
-    KeyA: false,
-    KeyS: false,
-    KeyD: false,
-    Space: false,
-    ShiftLeft: false,
-    ShiftRight: false,
-  });
-
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.code in keys.current) keys.current[e.code] = true;
-    };
-    const up = (e: KeyboardEvent) => {
-      if (e.code in keys.current) keys.current[e.code] = false;
-    };
-    window.addEventListener("keydown", down);
-    window.addEventListener("keyup", up);
-    return () => {
-      window.removeEventListener("keydown", down);
-      window.removeEventListener("keyup", up);
-    };
-  }, []);
-  useFrame((_, delta) => {
-    const speed = 3;
-    const move = new THREE.Vector3();
-
-    /* camera‑local forward vector (y projected out) */
-    const forward = new THREE.Vector3();
-    camera.getWorldDirection(forward);
-    forward.y = 0;
-    forward.normalize();
-
-    /* camera‑local right vector — rotate forward 90° around Y */
-    const right = new THREE.Vector3(-forward.z, 0, forward.x);
-
-    const k = keys.current;
-
-    if (k.KeyW) move.add(forward);
-    if (k.KeyS) move.sub(forward);
-    if (k.KeyD) move.add(right); // guaranteed right
-    if (k.KeyA) move.sub(right); // guaranteed left
-    if (k.Space) move.y += 1;
-    if (k.ShiftLeft || k.ShiftRight) move.y -= 1;
-
-    if (move.lengthSq() !== 0) {
-      move.normalize().multiplyScalar(speed * delta);
-      camera.position.add(move);
-    }
-  });
-
-  return <PointerLockControls />;
-};
+import { AtomicParticles } from "@/components/ui/AtomicParticles";
+import { FloatingTextField } from "@/components/ui/FloatingTextField";
+import { HeartSpawner } from "@/components/ui/HeartSpawner";
+import { Stars } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Controls } from "./control";
 export const HeartPage = () => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const handleClick = () => {
-    if (audioRef.current) {
-      audioRef.current.play();
-    }
-  };
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   const z = isMobile ? 10 : 1;
+  const musicRef = useRef<HTMLAudioElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [musicUrl, setMusicUrl] = useState("music/phepmau.mp3");
+  const [messages, setMessages] = useState<string[]>([]);
+
+  const { search, pathname } = useLocation();
+  const navigate = useNavigate();
+  const [title, setTitle] = useState("Untitled");
+  useEffect(() => {
+    const query = new URLSearchParams(search);
+    const titleFromQuery = query.get("title");
+    const musicFromQuery = query.get("music");
+    const messagesFromQuery = query.get("messages");
+    let didUpdate = false;
+    if (titleFromQuery) {
+      setTitle(titleFromQuery);
+      localStorage.setItem("heart_title", titleFromQuery);
+      didUpdate = true;
+    }
+    if (musicFromQuery) {
+      setMusicUrl(musicFromQuery);
+      localStorage.setItem("heart_music", musicFromQuery);
+      didUpdate = true;
+    }
+    if (messagesFromQuery) {
+      const splitMessages = messagesFromQuery.split("|");
+      setMessages(splitMessages);
+      localStorage.setItem("heart_messages", JSON.stringify(splitMessages));
+      didUpdate = true;
+    }
+
+    if (didUpdate) {
+      navigate(pathname, { replace: true });
+    } else {
+      const savedTitle = localStorage.getItem("heart_title");
+      const savedMusic = localStorage.getItem("heart_music");
+      const savedMessages = localStorage.getItem("heart_messages");
+
+      if (savedTitle) setTitle(savedTitle);
+      if (savedMusic) setMusicUrl(savedMusic);
+      if (savedMessages) setMessages(JSON.parse(savedMessages));
+    }
+  }, [search, pathname, navigate]);
+
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+
+  const play = () => {
+    if (musicRef.current) {
+      musicRef.current.play();
+    }
+  };
+
   return (
-    <div className="bg-white h-screen w-screen p-5 overflow-hidden">
-      <Canvas
-        onClick={handleClick}
-        camera={{ position: [0, 0, z], fov: 50 }}
-        className="cursor-pointer"
-      >
-        <ambientLight intensity={0.6} />
-        <pointLight position={[10, 10, 10]} />
-        <HeartParticles />
+    <div
+      className="bg-black h-screen w-screen p-5 overflow-hidden"
+      onClick={play}
+    >
+      <video
+        ref={videoRef}
+        src="video/video1.mp4"
+        style={{ display: "none" }}
+      />
+      <Canvas camera={{ position: [0, 0, z], fov: 50 }}>
+        <Stars radius={100} depth={50} count={5000} factor={4} fade speed={1} />
+        <EffectComposer>
+          <Bloom
+            intensity={2.5}
+            luminanceThreshold={0.1}
+            luminanceSmoothing={0.9}
+            mipmapBlur
+          />
+        </EffectComposer>
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={1} />
+        <FloatingTextField phrases={messages} />
+        <HeartSpawner />
+        <AtomicParticles count={200} />
         <Controls />
       </Canvas>
-      <audio ref={audioRef} src="/music/piano.mp3" />
+      <audio src={musicUrl} ref={musicRef} />
     </div>
   );
 };

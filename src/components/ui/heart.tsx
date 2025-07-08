@@ -58,21 +58,14 @@ export default function HeartParticles({
       pointsRef.current.scale.set(pulse, pulse, pulse); // pulsing
     }
     if (textRef.current) {
-      textRef.current.position.y = 5 + Math.sin(t * 2) * 0.5;
+      textRef.current.position.y = +t;
     }
   });
 
   return (
     <>
       <points ref={pointsRef} geometry={geometry} material={material} />
-      <Text
-        position={[0, 5, -10]}
-        fontSize={2}
-        color="yellow"
-        anchorX="center"
-        anchorY="middle"
-        ref={textRef}
-      >
+      <Text position={[0, 5, -10]} fontSize={2} color="yellow" ref={textRef}>
         Dbt19
       </Text>
     </>
