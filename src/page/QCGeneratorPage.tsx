@@ -9,7 +9,18 @@ export const QCGeneratorPage = () => {
   );
   const [music, setMusic] = useState<string>("music/phepmau.mp3");
   const [generatedUrl, setGeneratedUrl] = useState<string>("");
-
+  const audioOptions = [
+    { label: "Phép Màu", value: "music/phepmau.mp3" },
+    { label: "Ánh Nắng Của Anh", value: "music/anhnangcuaanh.mp3" },
+    { label: "Hơn Cả Yêu", value: "music/honcayeu.mp3" },
+    { label: "Nơi Này Có Anh", value: "music/noinaycoanh.mp3" },
+    { label: "Sau Tất Cả", value: "music/sautatca.mp3" },
+    { label: "Em Gái Mưa", value: "music/emgaimua.mp3" },
+    { label: "Anh sai rồi", value: "music/anhsairoi.mp3" },
+    { label: "Về bên anh", value: "music/vebenanh.mp3" },
+    { label: "Tháng Tư Là Lời Nói Dối Của Em", value: "music/thangtu.mp3" },
+    { label: "Phút ban đầu", value: "music/phutbandau.mp3" },
+  ];
   const handleGenerate = () => {
     const params = new URLSearchParams();
     if (title) params.append("title", title);
@@ -59,9 +70,11 @@ export const QCGeneratorPage = () => {
             }
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
           >
-            <option value="music/phepmau.mp3">Phép Màu</option>
-            <option value="music/love.mp3">Love</option>
-            <option value="music/dream.mp3">Dream</option>
+            {audioOptions.map(({ label, value }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -81,7 +94,6 @@ export const QCGeneratorPage = () => {
               📲 Scan or share:
             </p>
             <QRPreview value={generatedUrl} />
-            <p className="text-sm text-gray-500 break-words">{generatedUrl}</p>
           </div>
         )}
       </div>

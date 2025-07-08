@@ -5,10 +5,13 @@ import { Button } from "./button";
 export const QRPreview = ({ value }: { value: string }) => {
   const frameRef = useRef<HTMLDivElement>(null);
   const [color, setColor] = useState("#ec4899"); // pink
-
+  const getGradient = (hex: string) =>
+    `linear-gradient(135deg, ${hex}33 0%, ${hex}05 100%)`;
   const handleDownload = async () => {
     if (!frameRef.current) return;
+    const originalStyle = frameRef.current.style.padding;
     try {
+      frameRef.current.style.padding = "3rem";
       const dataUrl = await domtoimage.toPng(frameRef.current);
       const link = document.createElement("a");
       link.download = "qr-code.png";
@@ -16,6 +19,8 @@ export const QRPreview = ({ value }: { value: string }) => {
       link.click();
     } catch (error) {
       console.error("Error generating image:", error);
+    } finally {
+      frameRef.current.style.padding = originalStyle;
     }
   };
 
@@ -33,24 +38,33 @@ export const QRPreview = ({ value }: { value: string }) => {
 
       <div
         ref={frameRef}
-        className="inline-block bg-pink-100 p-4 pt-6 rounded-3xl shadow-lg relative border-4 border-dashed border-pink-300"
+        style={{ padding: "2rem", backgroundColor: "#fff" }} // extra padding
+        className="inline-block"
       >
-        {/* Bow or decoration */}
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-xl">
-          🎀
-        </div>
+        <div
+          style={{
+            background: getGradient(color),
+            borderColor: color,
+            boxShadow: `0 0 10px ${color}, 0 0 20px ${color}80`,
+            padding: "1.5rem",
+            paddingTop: "2rem",
+          }}
+          className="rounded-3xl relative border-4 border-dashed"
+        >
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-xl">
+            🎀
+          </div>
 
-        <QRCodeCanvas
-          value={value}
-          size={200}
-          bgColor="#ffffff"
-          fgColor={color}
-          level="H"
-        />
-
-        {/* Label below QR code */}
-        <div className="mt-2 text-sm text-pink-800 font-medium">
-          💖 Quét ở đây nè 💖
+          <QRCodeCanvas
+            value={value}
+            size={200}
+            bgColor="#ffffff"
+            fgColor={color}
+            level="H"
+          />
+          <div className="mt-2 text-sm text-pink-800 font-medium">
+            💖 Quét ở đây nè 💖
+          </div>
         </div>
       </div>
 
