@@ -6,6 +6,6 @@ export const userRoutes: RouteObject = {
   path: "/",
   children: [
     { path: "love", element: <HeartPage /> },
-    { index: true, path: "qc", element: <QCGeneratorPage /> },
+    { index: true, element: <QCGeneratorPage /> },
   ],
 };

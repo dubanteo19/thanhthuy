@@ -7,6 +7,8 @@ const glowColors = ["#ff77ff", "#ffcc00", "#00ffff", "#ff6699"];
 const TOTAL_TEXTS = 500;
 
 export const FloatingTextField: FC<{ phrases: string[] }> = ({ phrases }) => {
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
   return (
     <>
       {Array.from({ length: TOTAL_TEXTS }).map((_, i) => {
@@ -19,7 +21,8 @@ export const FloatingTextField: FC<{ phrases: string[] }> = ({ phrases }) => {
           Math.random() * 20 - 10,
         );
 
-        const size = 0.1 + Math.random() * 0.1;
+        const baseSize = isMobile ? 0.05 : 0.1;
+        const size = baseSize + Math.random() * 0.1;
         const speed = 0.3 + Math.random() * 0.7;
 
         return (

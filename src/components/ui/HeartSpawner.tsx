@@ -11,7 +11,7 @@ export function HeartSpawner() {
         [
           Math.random() * 10 - 5,
           -1 + Math.random() * 2,
-          Math.random() * -10,
+          Math.random() * -3,
         ] as [number, number, number],
     ),
   );

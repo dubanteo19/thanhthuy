@@ -20,7 +20,6 @@ export const FloatingHeart: FC<FloatingHeartProps> = ({
 }) => {
   const meshRef = useRef<THREE.Mesh>(null!);
 
-  /* ---------- random heart shape ---------- */
   const heartShape = useMemo(() => {
     const s = new THREE.Shape();
     s.moveTo(0, 0.25);
@@ -63,7 +62,7 @@ export const FloatingHeart: FC<FloatingHeartProps> = ({
     if (!meshRef.current) return;
     meshRef.current.position.y += riseSpeed;
     meshRef.current.rotation.y += spinSpeed;
-    if (meshRef.current.position.y > 10) {
+    if (meshRef.current.position.y > 5) {
       meshRef.current.position.y = -5 - Math.random() * 5;
     }
   });

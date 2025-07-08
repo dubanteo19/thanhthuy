@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { PointerLockControls } from "@react-three/drei";
+import { OrbitControls, PointerLockControls } from "@react-three/drei";
 import * as THREE from "three";
 export const Controls = () => {
   const { camera } = useThree();
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   const keys = useRef<Record<string, boolean>>({
     KeyW: false,
@@ -16,6 +17,8 @@ export const Controls = () => {
   });
 
   useEffect(() => {
+    if (isMobile) return;
+
     const down = (e: KeyboardEvent) => {
       if (e.code in keys.current) keys.current[e.code] = true;
     };
@@ -28,8 +31,9 @@ export const Controls = () => {
       window.removeEventListener("keydown", down);
       window.removeEventListener("keyup", up);
     };
-  }, []);
+  }, [isMobile]);
   useFrame((_, delta) => {
+    if (isMobile) return;
     const speed = 3;
     const move = new THREE.Vector3();
 
@@ -57,5 +61,17 @@ export const Controls = () => {
     }
   });
 
-  return <PointerLockControls />;
+  return isMobile ? (
+    <OrbitControls
+      enablePan={false}
+      enableRotate
+      enableZoom
+      zoomSpeed={0.8}
+      rotateSpeed={0.4}
+      maxDistance={20}
+      minDistance={2}
+    />
+  ) : (
+    <PointerLockControls />
+  );
 };

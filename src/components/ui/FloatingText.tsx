@@ -45,7 +45,7 @@ export const FloatingText: FC<FloatingTextProps> = ({
       <meshStandardMaterial
         color="#ffffff"
         emissive={glowColor}
-        emissiveIntensity={2.5}
+        emissiveIntensity={2}
         toneMapped={false}
       />
     </Text>
