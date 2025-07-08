@@ -74,6 +74,15 @@ export const QRPreview = ({ value }: { value: string }) => {
       >
         Tải xuống QR nè
       </Button>
+      <a href={value} target="_blank" >
+        <Button
+          onClick={handleDownload}
+          variant={"outline"}
+          className="   shadow"
+        >
+          Xem trước đây nè
+        </Button>
+      </a>
     </div>
   );
 };
