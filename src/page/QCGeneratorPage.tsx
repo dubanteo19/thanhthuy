@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { QRPreview } from "@/components/ui/QRPreview";
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 
 export const QCGeneratorPage = () => {
   const [title, setTitle] = useState<string>("");
@@ -29,9 +29,29 @@ export const QCGeneratorPage = () => {
     const url = `${window.location.origin}/love?${params.toString()}`;
     setGeneratedUrl(url);
   };
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    audioRef.current = new Audio(music);
+    audioRef.current.onended = () => setIsPlaying(false);
+  }, [music]);
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 to-blue-100 py-10 px-4">
-      <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-2xl p-8 space-y-6">
+      <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-2xl p-8 space-y-4 md:space-y-6">
         <h2 className="text-3xl font-bold text-center text-pink-600">
           🎁 Thay lời muốn nói
         </h2>
@@ -40,6 +60,7 @@ export const QCGeneratorPage = () => {
           <input
             type="text"
             value={title}
+            maxLength={100}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setTitle(e.target.value)
             }
@@ -53,6 +74,7 @@ export const QCGeneratorPage = () => {
           <p className=" text-pink-500">Mỗi dòng là một lời nhắn</p>
           <textarea
             value={messages}
+            maxLength={500}
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
               setMessages(e.target.value)
             }
@@ -63,19 +85,28 @@ export const QCGeneratorPage = () => {
 
         <div className="space-y-2">
           <label className="text-gray-700 font-medium">🎵 Chọn nhạc</label>
-          <select
-            value={music}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              setMusic(e.target.value)
-            }
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
-          >
-            {audioOptions.map(({ label, value }) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
+          <div className="flex gap-2 items-center">
+            <select
+              value={music}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setMusic(e.target.value)
+              }
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
+            >
+              {audioOptions.map(({ label, value }) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+            <Button
+              onClick={togglePlay}
+              variant={"ghost"}
+              className="text-2xl  rounded transition cursor-pointer px-1"
+            >
+              {isPlaying ? "⏸️" : "▶️"}
+            </Button>
+          </div>
         </div>
 
         <div className="text-center">
