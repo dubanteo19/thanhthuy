@@ -1,7 +1,7 @@
 import { AtomicParticles } from "@/components/ui/AtomicParticles";
+import { FloatingImageField } from "@/components/ui/FloatingImageField";
 import { FloatingTextField } from "@/components/ui/FloatingTextField";
 import { HeartSpawner } from "@/components/ui/HeartSpawner";
-import { useHeartData } from "@/hooks/useHeartData";
 import { Stars } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
@@ -12,10 +12,28 @@ export const HeartPage = () => {
   const z = isMobile ? 10 : 3;
   const musicRef = useRef<HTMLAudioElement>(null);
 
-  const { musicUrl, messages } = useHeartData();
+  const messages = [
+    "Tốt nghiệp dui dẻ!",
+    "Đàn em Hary chúc mừng tốt nghiệp nè!",
+    "Happy graduation!",
+    "Chúc mừng ra trường nhé!",
+    "Cuối cùng cũng xong rồi, giỏi quá!",
+    "Bay màu đại học rồi đó!",
+    "Học xong rồi, giờ tới công chuyện!",
+    "Congrats, cử nhân mới!",
+    "Chào tạm biệt deadline nhé!",
+    "Tốt nghiệp thành công mỹ mãn!",
+    "Bạn đã làm được, tuyệt vời lắm!",
+    "Mặc áo cử nhân là auto đẹp!",
+    "Bằng cấp đã về tay!",
+    "Một hành trình khép lại, một cánh cửa mở ra!",
+  ];
 
+  const musicUrl = "music/song1.mp3";
   const play = () => {
     if (musicRef.current) {
+
+      musicRef.current.currentTime  = 92;
       musicRef.current.play();
     }
   };
@@ -38,6 +56,21 @@ export const HeartPage = () => {
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
         <FloatingTextField phrases={messages} />
+        <FloatingImageField
+          imageUrls={[
+            "/img1i.jpg",
+            "/img2i.jpg",
+            "/img3i.jpg",
+            "/img3i.jpg",
+            "/img4i.jpg",
+            "/img5i.jpg",
+            "/img6i.jpg",
+            "/img7i.jpg",
+            "/img8i.jpg",
+            "/img9i.jpg",
+            "/img10i.jpg",
+          ]}
+        />
         <HeartSpawner />
         <AtomicParticles count={200} />
         <Controls />
