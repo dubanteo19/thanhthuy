@@ -34,7 +34,7 @@ export const Controls = () => {
   }, [isMobile]);
   useFrame((_, delta) => {
     if (isMobile) return;
-    const speed = 3;
+    const speed = 10;
     const move = new THREE.Vector3();
 
     /* camera‑local forward vector (y projected out) */

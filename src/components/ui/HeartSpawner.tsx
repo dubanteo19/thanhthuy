@@ -1,23 +1,27 @@
 import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
-import { FloatingHeart } from "./FLoatingHeart";
+import { FloatingIcon } from "./FloatingIcon";
 
-export function HeartSpawner() {
+const ICONS = ["🎈", "🎂", "🎁", "🎉", "❤️", "🥳"];
+
+export function BirthdaySpawner() {
   const startTime = useRef<number | null>(null);
   const [spawnedCount, setSpawnedCount] = useState(0);
-  const [positions] = useState(() =>
-    [...Array(200)].map(
-      () =>
-        [
-          Math.random() * 10 - 5,
-          -1 + Math.random() * 2,
-          Math.random() * -3,
-        ] as [number, number, number],
-    ),
+
+  // Predefine positions + icons for consistent spawning
+  const [items] = useState(() =>
+    [...Array(200)].map(() => ({
+      position: [
+        Math.random() * 10 - 5,
+        -2 + Math.random() * 2,
+        Math.random() * -3,
+      ] as [number, number, number],
+      icon: ICONS[Math.floor(Math.random() * ICONS.length)],
+    })),
   );
 
-  const lastSpawnTime = useRef(0); // Time of the last spawn
-  const spawnDelay = 0.1; // Delay between spawns in seconds (e.g., 0.1 = 100ms)
+  const lastSpawnTime = useRef(0);
+  const spawnDelay = 0.1;
 
   useFrame(({ clock }) => {
     const elapsed = clock.getElapsedTime();
@@ -31,7 +35,7 @@ export function HeartSpawner() {
 
     if (timeSinceStart < 2) return;
     if (
-      spawnedCount < positions.length &&
+      spawnedCount < items.length &&
       elapsed - lastSpawnTime.current > spawnDelay
     ) {
       lastSpawnTime.current = elapsed;
@@ -41,8 +45,8 @@ export function HeartSpawner() {
 
   return (
     <>
-      {positions.slice(0, spawnedCount).map((pos, i) => (
-        <FloatingHeart key={i} position={pos} />
+      {items.slice(0, spawnedCount).map((item, i) => (
+        <FloatingIcon key={i} position={item.position} icon={item.icon} />
       ))}
     </>
   );

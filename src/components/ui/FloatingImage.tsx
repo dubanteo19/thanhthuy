@@ -1,37 +1,22 @@
-// FloatingImage.tsx
-import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { forwardRef } from "react";
 import * as THREE from "three";
 
-export const FloatingImage = ({
-  texture,
-  initialPosition,
-  speed,
-  size,
-}: {
-  texture: THREE.Texture;
-  initialPosition: THREE.Vector3;
-  speed: number;
-  size: number;
-}) => {
-  const meshRef = useRef<THREE.Mesh>(null!);
-  const position = useRef<THREE.Vector3>(initialPosition.clone());
-
-  useFrame(() => {
-    position.current.y += speed * 0.01;
-    if (position.current.y > 10) {
-      position.current.y = -10 - Math.random() * 5;
-    }
-
-    if (meshRef.current) {
-      meshRef.current.position.copy(position.current);
-    }
-  });
-
+export const FloatingImage = forwardRef<
+  THREE.Mesh,
+  {
+    texture: THREE.Texture;
+    angle: number;
+    radius: number;
+    y: number;
+    speed: number;
+    size: number;
+    mode: "float" | "heart";
+  }
+>(({ texture, size }, ref) => {
   return (
-    <mesh ref={meshRef} position={position.current}>
+    <mesh ref={ref}>
       <planeGeometry args={[size, size]} />
       <meshBasicMaterial map={texture} transparent />
     </mesh>
   );
-};
+});
